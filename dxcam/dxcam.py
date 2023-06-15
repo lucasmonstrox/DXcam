@@ -68,8 +68,7 @@ class DXCamera:
             region = self.region
         else:
             self._validate_region(region)
-        frame = self._grab(region)
-        return frame
+        return self._grab(region)
 
     def _grab(self, region: Tuple[int, int, int, int]):
         if self._duplicator.update_frame():
@@ -79,9 +78,8 @@ class DXCamera:
                 self._stagesurf.texture, self._duplicator.texture
             )
             self._duplicator.release_frame()
-            rect = self._stagesurf.map()
             frame = self._processor.process(
-                rect, self.width, self.height, region, self.rotation_angle
+                self._stagesurf.map(), self.width, self.height, region, self.rotation_angle
             )
             self._stagesurf.unmap()
             return frame
