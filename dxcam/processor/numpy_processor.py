@@ -14,7 +14,6 @@ class NumpyProcessor(Processor):
         import cv2
 
         # only one time process
-        print('TEST', self.cvtcolor)
         if self.cvtcolor is None:
             color_mapping = {
                 "RGB": cv2.COLOR_BGRA2RGB,
@@ -46,14 +45,13 @@ class NumpyProcessor(Processor):
         else:
             size = pitch * width
 
-        buffer = (ctypes.c_char*size).from_address(ctypes.addressof(rect.pBits.contents)+offset)#Pointer arithmetic
         pitch = pitch // 4
         if rotation_angle in (0, 180):
-            image = np.ndarray((height, pitch, 4), dtype=np.uint8, buffer=buffer)
+            image = np.ndarray((height, pitch, 4), dtype=np.uint8, buffer=(ctypes.c_char*size).from_address(ctypes.addressof(rect.pBits.contents)+offset))
         elif rotation_angle in (90, 270):
-            image = np.ndarray((width, pitch, 4), dtype=np.uint8, buffer=buffer)
+            image = np.ndarray((width, pitch, 4), dtype=np.uint8, buffer=(ctypes.c_char*size).from_address(ctypes.addressof(rect.pBits.contents)+offset))
 
-        if not self.color_mode is None:
+        if self.color_mode is not None:
             image = self.process_cvtcolor(image)
 
         if rotation_angle == 90:
