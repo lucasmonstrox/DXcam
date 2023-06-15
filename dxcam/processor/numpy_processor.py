@@ -14,6 +14,7 @@ class NumpyProcessor(Processor):
         import cv2
 
         # only one time process
+        print('TEST', self.cvtcolor)
         if self.cvtcolor is None:
             color_mapping = {
                 "RGB": cv2.COLOR_BGRA2RGB,
