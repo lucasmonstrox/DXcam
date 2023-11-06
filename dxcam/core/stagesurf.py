@@ -46,14 +46,15 @@ class StageSurface:
                 None,
                 ctypes.byref(self.texture),
             )
+            self.interface = self.texture.QueryInterface(IDXGISurface)
 
     def map(self):
         rect: DXGI_MAPPED_RECT = DXGI_MAPPED_RECT()
-        self.texture.QueryInterface(IDXGISurface).Map(ctypes.byref(rect), 1)
+        self.interface.Map(ctypes.byref(rect), 1)
         return rect
 
     def unmap(self):
-        self.texture.QueryInterface(IDXGISurface).Unmap()
+        self.interface.Unmap()
 
     def __repr__(self) -> str:
         repr = f"{self.width}, {self.height}, {self.dxgi_format}"
