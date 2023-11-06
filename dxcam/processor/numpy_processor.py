@@ -19,15 +19,19 @@ class NumpyProcessor(Processor):
                 "RGB": cv2.COLOR_BGRA2RGB,
                 "RGBA": cv2.COLOR_BGRA2RGBA,
                 "BGR": cv2.COLOR_BGRA2BGR,
-                "GRAY": cv2.COLOR_BGRA2GRAY
+                "GRAY": cv2.COLOR_BGRA2GRAY,
+                "BGRA": None,
             }
             cv2_code = color_mapping[self.color_mode]
-            if cv2_code != cv2.COLOR_BGRA2GRAY:
-                self.cvtcolor = lambda image: cv2.cvtColor(image, cv2_code)
+            if cv2_code is not None:
+                if cv2_code != cv2.COLOR_BGRA2GRAY:
+                    self.cvtcolor = lambda image: cv2.cvtColor(image, cv2_code)
+                else:
+                    self.cvtcolor = lambda image: cv2.cvtColor(image, cv2_code)[
+                        ..., np.newaxis
+                    ]
             else:
-                self.cvtcolor = lambda image: cv2.cvtColor(image, cv2_code)[
-                    ..., np.newaxis
-                ] 
+                return image
         return self.cvtcolor(image)
 
     def process(self, rect, width, height, region, rotation_angle):
